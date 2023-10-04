@@ -1,50 +1,17 @@
 import { useState } from "react";
+import { handleFolderChange } from "../../Utils/handleFolderChange";
 
 function App() {
   const [folders, setFolders] = useState([]);
   const [fileContents, setFileContents] = useState({});
 
-  const handleFolderChange = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-
-    // Filtrar que empiezan con report_battery_
-    const htmlFiles = selectedFiles.filter((file) =>
-      file.name.startsWith("report_battery_")
-    );
-
-    // removemos los archivos que empiezan con report_energy del estado
-    htmlFiles.forEach((file) => {
-      const index = folders.findIndex((f) => f.name === file.name);
-      if (index !== -1) {
-        folders.splice(index, 1);
-      }
-    })
-
-    // Crear un Set para almacenar los seriales
-    const serialSet = new Set();
-
-    // serial webkitRelativePath: "1SXV6D3/battery/report_battery_1695618000000.html"
-    htmlFiles.forEach((file) => {
-      file.serial = file.webkitRelativePath.split("/")[1];
-      file.dateModified = file.lastModified;
-
-      // Verificar si el serial ya está en el Set
-      if (serialSet.has(file.serial)) {
-        // Si esta repetido removemos uno de los archivos del estado
-        const index = htmlFiles.findIndex((f) => f.serial === file.serial); // 1
-        htmlFiles.splice(index, 1);
-      } else {
-        // Si no está en el Set, agrégalo
-        serialSet.add(file.serial);
-      }
-    });
-
-    console.log(selectedFiles);
-    // Combina los archivos HTML seleccionados con los que ya estaban en el estado
-    setFolders((prevFolders) => [...prevFolders, ...htmlFiles]);
+  const handleChange = (e) => {
+    const targetFiles = e.target.files;
+    handleFolderChange(targetFiles, setFolders);
   };
 
   const scanFolders = async () => {
+    console.log(folders);
     const contentPromises = folders.map((file) => {
       return new Promise((resolve) => {
         const reader = new FileReader();
@@ -75,18 +42,20 @@ function App() {
     <>
       <input
         type="file"
-        onChange={handleFolderChange}
+        onChange={handleChange}
         webkitdirectory="true"
         multiple
       />
       <button onClick={scanFolders}>Scan</button>
       <div>
-        {folders.map((file) => (
-          <details key={file.serial}>
+        {folders.map((file, index) => (
+          <details key={index}>
             <summary>
-              {file.serial}--- {file.dateModified}{" "}
+              {file.serial}--- {file.lastModified} --- {index}
             </summary>
-            <pre>{fileContents[file.name]}</pre>
+            <pre>
+              SERIAL: {file.serial} {fileContents[file.name]}
+            </pre>
           </details>
         ))}
       </div>
