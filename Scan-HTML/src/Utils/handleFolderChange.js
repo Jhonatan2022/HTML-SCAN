@@ -6,22 +6,12 @@ function handleFolderChange(targetFiles, setFolders) {
     file.name.startsWith("report_battery_")
   );
 
-  // Set para almacenar los seriales
-  // const serialSet = new Set();
-
   // serial webkitRelativePath: "1SXV6D3/battery/report_battery_1695618000000.html"
   htmlFiles.forEach((file) => {
-    file.serial = file.webkitRelativePath.split("/")[0];
-
-    // Verificar si el serial ya está en el Set
-    // if (serialSet.has(file.serial)) {
-    //   // Si esta repetido removemos uno de los archivos del estado
-    //   const index = htmlFiles.findIndex((f) => f.serial === file.serial); // 1
-    //   htmlFiles.splice(index, 1);
-    // } else {
-    //   // Si no está en el Set, agrégalo
-    //   serialSet.add(file.serial);
-    // }
+    file.serial = file.webkitRelativePath.split("/")[1];
+    // extraemos el valor numerico del nombre del archivo
+    file.timestamp = file.name.split("_")[2].split(".")[0];
+    file.date = new Date(Number(file.timestamp)).toString();
   });
 
   console.log(selectedFiles);
