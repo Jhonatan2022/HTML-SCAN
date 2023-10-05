@@ -6,13 +6,13 @@ const loadCorrect = (folders, setFolders) => {
     const date = file.date;
 
     if (uniqueFiles[serial]) {
-      // Si ya existe un archivo con este serial, comparar las fechas
+      // Si ya existe un mismo serial, comparar las fechas
       if (date > uniqueFiles[serial].date) {
-        // Si la fecha actual es más reciente, reemplazar el archivo en uniqueFiles
+        // fecha actual es más reciente, reemplazar el archivo en uniqueFiles
         uniqueFiles[serial] = file;
       }
     } else {
-      // Si el serial no existe en uniqueFiles, agregarlo
+      // Si serial no existe en uniqueFiles, agregarlo
       uniqueFiles[serial] = file;
     }
   });
@@ -20,7 +20,6 @@ const loadCorrect = (folders, setFolders) => {
   // Convertir el objeto uniqueFiles en un arreglo de objetos
   const uniqueFilesArray = Object.values(uniqueFiles);
 
-  console.log(uniqueFilesArray);
   setFolders(uniqueFilesArray);
 };
 
