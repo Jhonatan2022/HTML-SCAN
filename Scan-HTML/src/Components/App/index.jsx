@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { handleFolderChange } from "../../Utils/handleFolderChange";
+import { getInfo } from "../../Utils/getInfo";
+import { loadCorrect } from "../../Utils/loadCorrect";
 
 function App() {
   const [folders, setFolders] = useState([]);
@@ -11,7 +13,6 @@ function App() {
   };
 
   const scanFolders = async () => {
-    console.log(folders);
     const contentPromises = folders.map((file) => {
       return new Promise((resolve) => {
         const reader = new FileReader();
@@ -29,10 +30,19 @@ function App() {
     });
 
     const fileContentsArray = await Promise.all(contentPromises);
+    const parser = new DOMParser();
     const newFileContents = {};
 
     fileContentsArray.forEach((fileContent) => {
       newFileContents[fileContent.fileName] = fileContent.content;
+
+      const htmlDocument = parser.parseFromString(
+        // Convertir string en un documento HTML
+        fileContent.content,
+        "text/html"
+      );
+
+      getInfo(htmlDocument);
     });
 
     setFileContents(newFileContents);
@@ -47,14 +57,19 @@ function App() {
         multiple
       />
       <button onClick={scanFolders}>Scan</button>
+      <button onClick={() => loadCorrect(folders, setFolders)}> Load Correct
+      </button>
       <div>
         {folders.map((file, index) => (
           <details key={index}>
-            <summary>
-              {file.serial}--- {file.lastModified} --- {index}
-            </summary>
+            <summary>{file.serial}</summary>
             <pre>
-              SERIAL: {file.serial} {fileContents[file.name]}
+              SERIAL: {file.serial}
+              <br />
+              {/* DESIGN CAPACITY: {file} */}
+              <br />
+              {/* FULL CHARGE CAPACITY: {file} */}
+              <br />
             </pre>
           </details>
         ))}
