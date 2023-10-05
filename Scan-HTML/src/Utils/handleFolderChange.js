@@ -14,10 +14,8 @@ function handleFolderChange(targetFiles, setFolders) {
     file.date = new Date(Number(file.timestamp)).toString();
   });
 
-  console.log(selectedFiles);
-  // Combina los archivos HTML seleccionados con los que ya estaban en el estado
+  // Combina archivos seleccionados con los que ya estaban en el estado
   setFolders((prevFolders) => [...prevFolders, ...htmlFiles]);
-  //   setFolders(htmlFiles);
 }
 
 export { handleFolderChange };

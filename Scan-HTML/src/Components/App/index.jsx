@@ -5,7 +5,6 @@ import { loadCorrect } from "../../Utils/loadCorrect";
 
 function App() {
   const [folders, setFolders] = useState([]);
-  const [fileContents, setFileContents] = useState({});
 
   const handleChange = (e) => {
     const targetFiles = e.target.files;
@@ -22,6 +21,8 @@ function App() {
           resolve({
             fileName: file.name,
             content,
+            serial: file.serial,
+            date: file.date,
           });
         };
 
@@ -34,7 +35,7 @@ function App() {
     const newFileContents = {};
 
     fileContentsArray.forEach((fileContent) => {
-      newFileContents[fileContent.fileName] = fileContent.content;
+      newFileContents[fileContent.serial] = fileContent.content;
 
       const htmlDocument = parser.parseFromString(
         // Convertir string en un documento HTML
@@ -42,10 +43,17 @@ function App() {
         "text/html"
       );
 
-      getInfo(htmlDocument);
+      const batteryInfo = getInfo(htmlDocument);
+
+      fileContent.designCapacity = batteryInfo.designCapacity;
+      fileContent.fullChargeCapacity = batteryInfo.fullChargeCapacity;
+      
+
+
     });
 
-    setFileContents(newFileContents);
+    console.log(fileContentsArray);
+    setFolders(fileContentsArray);
   };
 
   return (
@@ -57,18 +65,17 @@ function App() {
         multiple
       />
       <button onClick={scanFolders}>Scan</button>
-      <button onClick={() => loadCorrect(folders, setFolders)}> Load Correct
+      <button onClick={() => loadCorrect(folders, setFolders)}>
+        Load Correct
       </button>
       <div>
         {folders.map((file, index) => (
           <details key={index}>
             <summary>{file.serial}</summary>
             <pre>
-              SERIAL: {file.serial}
+              DESIGN CAPACITY: {file.designCapacity}
               <br />
-              {/* DESIGN CAPACITY: {file} */}
-              <br />
-              {/* FULL CHARGE CAPACITY: {file} */}
+              FULL CHARGE CAPACITY: {file.fullChargeCapacity}
               <br />
             </pre>
           </details>
