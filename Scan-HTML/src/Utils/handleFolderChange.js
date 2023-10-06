@@ -11,7 +11,9 @@ function handleFolderChange(targetFiles, setFolders) {
     file.serial = file.webkitRelativePath.split("/")[1];
     // extraemos el valor numerico del nombre del archivo
     file.timestamp = file.name.split("_")[2].split(".")[0];
-    file.date = new Date(Number(file.timestamp)).toString();
+    // fecha formato dd/mm/yyyy
+    file.date = new Date(parseInt(file.timestamp)).toLocaleDateString();
+    // file.date = new Date(Number(file.timestamp)).toString();
   });
 
   // Combina archivos seleccionados con los que ya estaban en el estado
