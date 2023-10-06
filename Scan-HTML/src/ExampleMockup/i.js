@@ -2,7 +2,7 @@ function getInfo() {
   const tables = document.querySelectorAll("table");
 
   // const table2 = tables[1];
-  const rows  = tables[1].querySelector("tbody");
+  const rows = tables[1].querySelector("tbody");
 
   const rowsTr = rows.querySelectorAll("tr");
   const row4 = rowsTr[4].querySelectorAll("td");
